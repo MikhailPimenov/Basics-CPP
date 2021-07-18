@@ -33,7 +33,8 @@ T& Array<T>::operator[](int index){
 
 template <typename T>
 const T& Array<T>::operator[](int index) const {
-	return operator[](index);
+	assert(index >= 0 && index < m_length && "Error: index is out of range!");
+	return m_data[index];
 }
 
 template <typename T>
