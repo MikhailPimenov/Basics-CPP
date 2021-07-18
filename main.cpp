@@ -1,17 +1,18 @@
 #include <iostream>
 
-#include "Dollars.h"
-#include "average.h"
-#include "maximum.h"
-
+#include "Array.h"
 
 int main() {
-	Dollars dollars[] = { Dollars(7), Dollars(8), Dollars(9), Dollars(10), Dollars(11) };
-	const int length = sizeof(dollars) / sizeof(dollars[0]);
+	Array<int> intArray(10);
+	Array<double> doubleArray(10);
 
-	std::cout << "average = " << average(dollars, length) << '\n';
+	for (int count = 0; count < intArray.getLength(); ++count) {
+		intArray[count] = count;
+		doubleArray[count] = count + 0.5;
+	}
 
-	std::cout << "maximum = " << maximum(Dollars(35), Dollars(77)) << '\n';
+	for (int count = intArray.getLength() - 1; count >= 0; --count)
+		std::cout << intArray[count] << "\t" << doubleArray[count] << '\n';
 
 	return 0;
 }
