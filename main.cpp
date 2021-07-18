@@ -1,18 +1,29 @@
 #include <iostream>
 
-#include "Array.h"
+#include "StaticArray.h"
 
 int main() {
-	Array<int> intArray(10);
-	Array<double> doubleArray(10);
+    StaticArray<int, 10> intArray;
 
-	for (int count = 0; count < intArray.getLength(); ++count) {
-		intArray[count] = count;
-		doubleArray[count] = count + 0.5;
-	}
 
-	for (int count = intArray.getLength() - 1; count >= 0; --count)
-		std::cout << intArray[count] << "\t" << doubleArray[count] << '\n';
+    for (int count = 0; count < 10; ++count)
+        intArray[count] = count;
 
-	return 0;
+
+    for (int count = 9; count >= 0; --count)
+        std::cout << intArray[count] << " ";
+    std::cout << '\n';
+
+
+    StaticArray<double, 5> doubleArray;
+
+
+    for (int count = 0; count < 5; ++count)
+        doubleArray[count] = 5.5 + 0.1 * count;
+
+
+    for (int count = 0; count < 5; ++count)
+        std::cout << doubleArray[count] << ' ';
+
+    return 0;
 }
