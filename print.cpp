@@ -21,7 +21,7 @@ void print(const StaticArray<double, size>& object) {
 	std::cout << "print(): double\n";
 	for (int index = 0; index < size; ++index)
 		std::cout << std::scientific << object[index] << ' ';
-	std::cout << '\n';
+	std::cout << std::defaultfloat << '\n';
 }
 
 

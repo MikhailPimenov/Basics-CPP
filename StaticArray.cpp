@@ -43,5 +43,5 @@ void StaticArray<double, size>::print() const {
 	std::cout << "StaticArray::print(): double\n";
 	for (int index = 0; index < size; ++index)
 		std::cout << std::scientific << this->m_data[index] << ' ';
-	std::cout << '\n';
+	std::cout << std::defaultfloat << '\n';
 }

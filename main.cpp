@@ -30,41 +30,41 @@ void print_main(const StaticArray<T, size>& object) {
 
 int main() {
 
-	//StaticArray<int, 5> intArray;
+	StaticArray<int, 5> intArray;
 
 
-	//for (int count = 0; count < 5; ++count)
-	//	intArray[count] = count;
-	//intArray.print();
+	for (int count = 0; count < 5; ++count)
+		intArray[count] = count;
+	intArray.print();
 
-	//print(intArray);
-	//print_main(intArray);
-
-
-	//StaticArray<double, 4> doubleArray;
-
-	//for (int count = 0; count < 4; ++count)
-	//	doubleArray[count] = (4. + 0.1 * count);
-	//doubleArray.print();
-	//print(doubleArray);
-	//print_main(doubleArray);
+	print(intArray);
+	print_main(intArray);
 
 
+	StaticArray<double, 4> doubleArray;
 
-	//StaticArray<char, 14> char14;
-	//
-	//strcpy_s(char14.data(), 14, "Hello, world!");
-
-
-	//print(char14);
-	//print_main(char14);
-
-
-	//StaticArray<char, 12> char12;
-
-	//strcpy_s(char12.data(), 12, "Hello, dad!");
+	for (int count = 0; count < 4; ++count)
+		doubleArray[count] = (4. + 0.1 * count);
+	doubleArray.print();
+	print(doubleArray);
+	print_main(doubleArray);
 
 
-	//print(char12);
-	//print_main(char12);
+
+	StaticArray<char, 14> char14;
+	
+	strcpy_s(char14.data(), 14, "Hello, world!");
+
+	char14.print();
+	print(char14);
+	print_main(char14);
+
+
+	StaticArray<char, 12> char12;
+
+	strcpy_s(char12.data(), 12, "Hello, dad!");
+
+	char12.print();
+	print(char12);
+	print_main(char12);
 }
