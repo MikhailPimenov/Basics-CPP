@@ -42,6 +42,20 @@ public:
 template <>
 class Repository < char* > : public Repository_base < char*> {
 public:
-	Repository(char* cstring);
-	virtual ~Repository() override;
+	Repository(char* cstring) {
+		std::cout << "Repository(char*):\n";
+		int length = 0;
+		while (cstring[length] != '\0')
+			++length;
+		++length; // '\0'
+
+		this->m_data = new char[length];
+		for (int index = 0; index < length; ++index)
+			this->m_data[index] = cstring[index];
+	}
+
+	virtual ~Repository() override {
+		delete[] this->m_data;
+	}
+	
 };
