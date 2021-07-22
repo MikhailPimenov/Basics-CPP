@@ -7,16 +7,11 @@ private:
 	int m_dollars;
 
 public:
+	Dollars();
 	Dollars(int dollars);
-	Dollars(const Dollars &object);
-	Dollars(Dollars &&object);
 
-	Dollars& operator=(const Dollars& object);
-	Dollars& operator=(Dollars&& object) noexcept;
-
-
-	friend Dollars operator+(const Dollars& object1, const Dollars& object2);
-	friend Dollars operator+(const Dollars& object, int dollars);
+	Dollars operator+(const Dollars& object);
+	Dollars operator+(int dollars);
 	friend Dollars operator+(int dollars, const Dollars& object);
 
 	int getDollars() const;
