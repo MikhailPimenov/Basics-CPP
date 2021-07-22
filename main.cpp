@@ -1,7 +1,14 @@
 #include <iostream>
 
-int main() {
-	std::cout << "Hello, world!\n";
+#include "Point.h"
 
-	return 0;
+int main() {
+    std::cout << "Enter a point: \n";
+
+    Point point;
+    std::cin >> point;
+
+    std::cout << "You entered: " << point << '\n';
+
+    return 0;
 }
