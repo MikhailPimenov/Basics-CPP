@@ -1,7 +1,20 @@
 #include <iostream>
 
+#include "Cents.h"
+#include "Dollars.h"
+
 int main() {
-	std::cout << "Hello, world!\n";
+	Cents cents(700);
+	printDollars(cents); 
+
+	cents = 780;
+	printDollars(cents);
+
+	cents = 1700;
+	printDollars(cents);
+
+	cents = 1580;
+	printDollars(cents);
 
 	return 0;
 }
