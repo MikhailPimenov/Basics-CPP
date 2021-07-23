@@ -139,7 +139,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main1.cpp" />
+    <ClCompile Include="Fraction.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SomeString.cpp" />
+    <ClCompile Include="SomeStringDelete.cpp" />
+    <ClCompile Include="SomeStringExplicit.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Fraction.h" />
+    <ClInclude Include="SomeString.h" />
+    <ClInclude Include="SomeStringDelete.h" />
+    <ClInclude Include="SomeStringExplicit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
