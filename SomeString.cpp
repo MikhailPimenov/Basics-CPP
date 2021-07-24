@@ -35,6 +35,7 @@ SomeString::SomeString(const SomeString &object) : m_length(object.m_length) {
 }
 
 SomeString::~SomeString() {
+	std::cout << m_data << "~SomeString():\n";
 	delete[] m_data;
 }
 

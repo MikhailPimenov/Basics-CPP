@@ -142,6 +142,7 @@
     <ClCompile Include="Fraction.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SomeString.cpp" />
+    <ClCompile Include="SomeStringShallowCopying.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="Fraction.h" />
     <ClInclude Include="SomeString.h" />
+    <ClInclude Include="SomeStringShallowCopying.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
