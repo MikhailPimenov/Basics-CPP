@@ -5,11 +5,19 @@
 
 class SomeString {
 private:
-	std::string m_string;
+	char* m_data;
+	int m_length;
 
 public:
-	SomeString(int size = 0);
-	SomeString(const char* cstring);
+	SomeString();
+	SomeString(const char* data);
+	SomeString(const SomeString& object);
+	
+
+	virtual ~SomeString();
+
+	SomeString& operator=(const SomeString& object);
+
 
 	friend std::ostream& operator<<(std::ostream& out, const SomeString& object);
 };

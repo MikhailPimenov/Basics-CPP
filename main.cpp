@@ -3,30 +3,27 @@
 
 #include "Fraction.h"
 #include "SomeString.h"
-#include "SomeStringExplicit.h"
-#include "SomeStringDelete.h"
 
-Fraction makeNegative(Fraction fraction) {
-	fraction.setNumerator(-fraction.getNumerator());
-	return fraction;
-}
 
 int main() {
-	std::cout << makeNegative(7) << '\n';
+
+	Fraction f1(7, 9);
+	Fraction f2(8, 11);
+
+	f2 = f1;
+	std::cout << f2 << '\n';
+	f2 = f2;
+	std::cout << f2 << '\n';
 
 
-	SomeString mystring = 'a'; 
-	std::cout << mystring << '\n';
 
+	SomeString anton("Anton");
+	SomeString employee;
+	employee = anton;
+	std::cout << employee << '\n';
 
-	// Error: constructor is explicit!
-	 //SomeStringExplicit mystring2 = 'a';
-	// std::cout << mystring2 << '\n';
-
-
-	// Error: constructor(char) is deleted!
-	 //SomeStringDelete mystring3 = 'a';
-	 //std::cout << mystring3 << '\n';
+	anton = anton;
+	std::cout << anton << '\n';
 
 	return 0;
 }
