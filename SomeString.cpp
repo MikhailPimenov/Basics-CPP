@@ -23,6 +23,13 @@ SomeString::SomeString(const char* data) {
 SomeString::SomeString(const SomeString &object) : m_length(object.m_length) {
 	std::cout << "SomeString(const SomeString&):\n";
 
+	if (!object.m_data) {
+		m_data = nullptr;
+		return;
+	}
+
+	m_data = new char[m_length];
+
 	for (int index = 0; index < object.m_length; ++index)
 		m_data[index] = object.m_data[index];
 }
@@ -39,11 +46,16 @@ SomeString& SomeString::operator=(const SomeString& object) {
 	if (m_data)
 		delete[] m_data;
 
-	m_data = new char[object.m_length];
+	m_length = object.m_length;
+
+	if (!object.m_data) {
+		m_data = nullptr;
+		return *this;
+	}
+
+	m_data = new char[m_length];
 	for (int index = 0; index < object.m_length; ++index)
 		m_data[index] = object.m_data[index];
-
-	m_length = object.m_length;
 
 	return *this;
 }
