@@ -139,18 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Fraction.cpp" />
+    <ClCompile Include="Cents.cpp" />
+    <ClCompile Include="Dollars.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SomeString.cpp" />
-    <ClCompile Include="SomeStringShallowCopying.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Fraction.h" />
-    <ClInclude Include="SomeString.h" />
-    <ClInclude Include="SomeStringShallowCopying.h" />
+    <ClInclude Include="Cents.h" />
+    <ClInclude Include="Dollars.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

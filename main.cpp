@@ -1,34 +1,20 @@
 #include <cassert>
 #include <iostream>
 
-#include "Fraction.h"
-#include "SomeString.h"
-#include "SomeStringShallowCopying.h"
+#include "Cents.h"
+#include "Dollars.h"
 
 int main() {
-	Fraction f1(7, 9);
-	Fraction f2(8, 11);
+	Cents cents(700);
+	printDollars(cents); 
 
-	f2 = f1;
-	std::cout << f2 << '\n';
-	f2 = f2;
-	std::cout << f2 << '\n';
+	cents = 780;
+	printDollars(cents);
 
-	SomeStringShallowCopying mike("Mike");
-	{
-		SomeStringShallowCopying jobless = mike;
-		std::cout << jobless << '\n';
-	}
-	std::cout << mike << '\n'; // undefined behaviour - trying to access deleted memory
+	cents = 1700;
+	printDollars(cents);
 
-
-	SomeString anton("Anton");
-	{
-		SomeString employee = anton;
-		std::cout << employee << '\n';
-	}
-	std::cout << anton << '\n';
-
-
+	cents = 1580;
+	printDollars(cents);
 	return 0;
-} // undefined behaviour - trying to delete deleted memory again
+}
