@@ -4,17 +4,26 @@
 #include "Cents.h"
 #include "Dollars.h"
 
+#include "maximum.h"
+#include "average.h"
+
+
+
+
 int main() {
-	Cents cents(700);
-	printDollars(cents); 
 
-	cents = 780;
-	printDollars(cents);
+	Cents nickle{ 5 };
+	Cents dime{ 10 };
 
-	cents = 1700;
-	printDollars(cents);
+	Cents bigger = maximum(nickle, dime);
+	std::cout << bigger << '\n';
 
-	cents = 1580;
-	printDollars(cents);
+	
+	Cents centsArray[] = { Cents(5), Cents(10), Cents(15), Cents(14) };
+	Dollars dollarsArray[] = { Dollars(20), Dollars(30), Dollars(40), Dollars(50), Dollars(60) };
+	
+	std::cout << *(average(centsArray, 4).get()) << '\n';
+	std::cout << *(average(dollarsArray, 5).get()) << '\n';
+	
 	return 0;
 }

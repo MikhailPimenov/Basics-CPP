@@ -139,16 +139,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="average-impl.cpp" />
+    <ClCompile Include="average.cpp" />
     <ClCompile Include="Cents.cpp" />
     <ClCompile Include="Dollars.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="maximum-impl.cpp" />
+    <ClCompile Include="maximum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="average.h" />
     <ClInclude Include="Cents.h" />
     <ClInclude Include="Dollars.h" />
+    <ClInclude Include="maximum.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
