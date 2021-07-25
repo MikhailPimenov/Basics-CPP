@@ -139,7 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main1.cpp" />
+    <ClCompile Include="Auto_ptr-impl.cpp" />
+    <ClCompile Include="Auto_ptr.cpp" />
+    <ClCompile Include="Auto_ptr2-impl.cpp" />
+    <ClCompile Include="Auto_ptr2.cpp" />
+    <ClCompile Include="Auto_ptr_base-impl.cpp" />
+    <ClCompile Include="Auto_ptr_base.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Auto_ptr.h" />
+    <ClInclude Include="Auto_ptr2.h" />
+    <ClInclude Include="Auto_ptr_base.h" />
+    <ClInclude Include="Item.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
