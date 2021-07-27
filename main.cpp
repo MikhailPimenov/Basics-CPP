@@ -1,95 +1,84 @@
 #include <iostream>
 
 #include "Item.h"
-#include "Auto_ptr.h"
-#include "Auto_ptr2.h"
 
-void f1() {
-	Item* p = new Item;
-	delete p;
+void f1(Item& object) {
+	std::cout << "f1(Item&):\n";
+}
+void f1(Item&& object) {
+	std::cout << "f1(Item&&):\n";
 }
 
-void f2(int a) {
-	Item* p = new Item;
-
-	if (!a) return;
-
-	delete p;
-}
-
-void f3(int a) {
-	Auto_ptr<Item> p(new Item);
-
-	if (!a) return;
-
-	p->sayHI();
-}
-
-void f4(Auto_ptr<Item> item) {
-// End of this function can lead to undefined behaviour, 
-// because in main() memory will be deleted for the second time
-}
-
-Auto_ptr<Item> f5() {
-	Auto_ptr<Item> p(new Item);
-	return p;
-// End of this function can lead to undefined behaviour, 
-// because in main() memory will be deleted for the second time
-}
-
-void f6(int a) {
-	Auto_ptr2<Item> p(new Item);
-
-	if (!a) return;
-
-	p->sayHI();
-}
-
-void f7(Auto_ptr2<Item> item) {
-	
-}
-
-Auto_ptr2<Item> f8() {
-	Auto_ptr2<Item> p(new Item);
-	return p;
-}
-
-int Item::s_counter = 0;
 int Item::s_alive = 0;
+int Item::s_counter = 0;
+
+void printLvalue(std::string& name) {
+	std::cout << "[non-const lvalue only] " << name << '\n';
+}
+
+void printLvalueConst(const std::string& name) {
+	std::cout << "[const lvalue only] " << name << '\n';
+}
+
+void printRvalue(std::string&& name) {
+	std::cout << "[rvalue only] " << name << '\n';
+}
+
+void print(const std::string& name) {
+	std::cout << "[lvalue] " << name << '\n';
+}
+void print(std::string&& name) {
+	std::cout << "[rvalue] " << name << '\n';
+}
+
 int main() {
-	f1();
-
-	f2(1);
-	f2(0);
-
-	f3(0);
-
-	Auto_ptr<Item> p(new Item());
-	//f4(p); // undefined behaviour after main() is finished
-
-	//Auto_ptr<Item> p_returned = f5(); // undefined behaviour after main() is finished
-
-	//f6(0);
-
-	Auto_ptr2<Item> p2(new Item());
-	//f7();
+	Item item;
+	f1(item);
+	f1(Item());
 
 	
-	//Auto_ptr2<Item> p2_returned = f8();
+	int lvalue = 6;
 
-	Auto_ptr2<Item> item1(new Item);
-	Auto_ptr2<Item> item2; // начнем с nullptr
 
-	std::cout << "item1 is " << (item1.isNull() ? "null\n" : "not null\n");
-	std::cout << "item2 is " << (item2.isNull() ? "null\n" : "not null\n");
+	const int& lref_const = lvalue;
+	//const int&& rref_const = lvalue; // error
 
-	item2 = item1; // item2 теперь является "владельцем" значения item1, объекту item1 присваивается null
+	int& lref = lvalue;
+	//int&& rref = lvalue; // error
 
-	std::cout << "Ownership transferred\n";
+	const int& lref_const2 = 7;
+	const int&& rref_const2 = 7;
 
-	std::cout << "item1 is " << (item1.isNull() ? "null\n" : "not null\n");
-	std::cout << "item2 is " << (item2.isNull() ? "null\n" : "not null\n");
+	//int& lref2 = 7; // error
+	int&& rref2 = 7;
 
+
+	std::cout << "\n\n\n";
+	
+	std::string name = "Mikhail";
+	std::string surname = "Ivanov";
+	std::string full_name = name + surname;
+
+
+	printLvalue(full_name);
+	//printLvalue(name + surname); // error
+	
+	std::cout << '\n';
+
+	//printRvalue(full_name); // error
+	printRvalue(name + surname);
+	
+	std::cout << '\n';
+
+	printLvalueConst(full_name);
+	printLvalueConst(name + surname);
+
+	std::cout << '\n';
+
+	print(full_name); // const std::string& overloaded version invoked
+	print(name + surname); // std::string&& overloaded version invoked
+	
+	std::cout << '\n';
 
 	return 0;
 }
