@@ -1,95 +1,82 @@
 #include <iostream>
 
 #include "Item.h"
-#include "Auto_ptr.h"
-#include "Auto_ptr2.h"
 
-void f1() {
-	Item* p = new Item;
-	delete p;
-}
+#include "Auto_ptr3.h"
+#include "Auto_ptr4.h"
 
-void f2(int a) {
-	Item* p = new Item;
+#include "generate_item.h"
 
-	if (!a) return;
+#include "Timer.h"
 
-	delete p;
-}
+#include "DynamicArrayCopy.h"
+#include "DynamicArrayMove.h"
 
-void f3(int a) {
-	Auto_ptr<Item> p(new Item);
+#include "clone_array_and_double.h"
 
-	if (!a) return;
 
-	p->sayHI();
-}
-
-void f4(Auto_ptr<Item> item) {
-// End of this function can lead to undefined behaviour, 
-// because in main() memory will be deleted for the second time
-}
-
-Auto_ptr<Item> f5() {
-	Auto_ptr<Item> p(new Item);
-	return p;
-// End of this function can lead to undefined behaviour, 
-// because in main() memory will be deleted for the second time
-}
-
-void f6(int a) {
-	Auto_ptr2<Item> p(new Item);
-
-	if (!a) return;
-
-	p->sayHI();
-}
-
-void f7(Auto_ptr2<Item> item) {
-	
-}
-
-Auto_ptr2<Item> f8() {
-	Auto_ptr2<Item> p(new Item);
-	return p;
-}
 
 int Item::s_counter = 0;
 int Item::s_alive = 0;
+
+
+
 int main() {
-	f1();
 
-	f2(1);
-	f2(0);
+	std::cout << "copy semantics:\n\n";
+	{
+		Auto_ptr3<Item> mainItem3; // only deep copy constructor and '=' available
+		mainItem3 = generate_item(Auto_ptr3<Item>());
+	}
 
-	f3(0);
+	std::cout << "\n\nmove semantics:\n\n";
+	{
+		Auto_ptr4<Item> mainItem4; // both move and copy semantics available
+		mainItem4 = generate_item(Auto_ptr4<Item>());
+	}
+	std::cout << "\n\n\n\n";
 
-	Auto_ptr<Item> p(new Item());
-	//f4(p); // undefined behaviour after main() is finished
 
-	//Auto_ptr<Item> p_returned = f5(); // undefined behaviour after main() is finished
-
-	//f6(0);
-
-	Auto_ptr2<Item> p2(new Item());
-	//f7();
-
+	const int length = 1000000;
+	const int number_of_tests = 5;
 	
-	//Auto_ptr2<Item> p2_returned = f8();
+	double total_time1 = 0.0;
+	double total_time2 = 0.0;
 
-	Auto_ptr2<Item> item1(new Item);
-	Auto_ptr2<Item> item2; // начнем с nullptr
+	for (int i = 0; i < number_of_tests; ++i) {
+		DynamicArrayCopy<int> array_copy(length);
 
-	std::cout << "item1 is " << (item1.isNull() ? "null\n" : "not null\n");
-	std::cout << "item2 is " << (item2.isNull() ? "null\n" : "not null\n");
+		for (int i = 0; i < array_copy.getLength(); i++)
+			array_copy[i] = i;
 
-	item2 = item1; // item2 теперь является "владельцем" значения item1, объекту item1 присваивается null
+		Timer t;
+	    array_copy = clone_array_and_double(array_copy);
+		const double time1 = t.elapsed();
+		total_time1 += time1;
 
-	std::cout << "Ownership transferred\n";
+		std::cout << "time for copy semantics: " << time1 << "\n\n";
 
-	std::cout << "item1 is " << (item1.isNull() ? "null\n" : "not null\n");
-	std::cout << "item2 is " << (item2.isNull() ? "null\n" : "not null\n");
+		DynamicArrayMove<int> array_move(length);
 
+		for (int i = 0; i < array_move.getLength(); i++)
+			array_move[i] = i;
+
+		t.reset();
+		array_move = clone_array_and_double(array_move);
+		const double time2 = t.elapsed();
+		total_time2 += time2;
+
+		std::cout << "time for move semantics: " << time2 << "\n\n";
+
+		std::cout << "time1 / time2 = " << time1 / time2 << '\n';
+	}
+	std::cout << "\n\n\n";
+
+	const double average_time1 = total_time1 / (number_of_tests + 1);
+	const double average_time2 = total_time2 / (number_of_tests + 1);
+
+	const double ratio = average_time1 / average_time2;
+	std::cout << "average_time1 / average_time2 = " << ratio << "\n\n\n";
 
 	return 0;
 }

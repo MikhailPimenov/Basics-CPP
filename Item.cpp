@@ -17,7 +17,7 @@ Item::Item(const Item& object) : m_id(++s_counter) {
 }
 
 Item& Item::operator=(const Item& object) {
-	std::cout << "Item(const Item&): Item #"
+	std::cout << "operator=(const Item&): Item #"
 		<< m_id << " assigned from #" << object.m_id << '\n';
 
 	return *this;

@@ -143,10 +143,25 @@
     <ClCompile Include="Auto_ptr.cpp" />
     <ClCompile Include="Auto_ptr2-impl.cpp" />
     <ClCompile Include="Auto_ptr2.cpp" />
+    <ClCompile Include="Auto_ptr3-impl.cpp" />
+    <ClCompile Include="Auto_ptr3.cpp" />
+    <ClCompile Include="Auto_ptr4-impl.cpp" />
+    <ClCompile Include="Auto_ptr4.cpp" />
     <ClCompile Include="Auto_ptr_base-impl.cpp" />
     <ClCompile Include="Auto_ptr_base.cpp" />
+    <ClCompile Include="clone_array_and_double-impl.cpp" />
+    <ClCompile Include="clone_array_and_double.cpp" />
+    <ClCompile Include="DynamicArrayCopy-impl.cpp" />
+    <ClCompile Include="DynamicArrayCopy.cpp" />
+    <ClCompile Include="DynamicArrayMove.cpp" />
+    <ClCompile Include="DynamicArray_base-impl.cpp" />
+    <ClCompile Include="DynamicArray_base.cpp" />
+    <ClCompile Include="DynamicArrayMove-impl.cpp" />
+    <ClCompile Include="generate_item-impl.cpp" />
+    <ClCompile Include="generate_item.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -154,8 +169,16 @@
   <ItemGroup>
     <ClInclude Include="Auto_ptr.h" />
     <ClInclude Include="Auto_ptr2.h" />
+    <ClInclude Include="Auto_ptr3.h" />
+    <ClInclude Include="Auto_ptr4.h" />
     <ClInclude Include="Auto_ptr_base.h" />
+    <ClInclude Include="clone_array_and_double.h" />
+    <ClInclude Include="DynamicArrayCopy.h" />
+    <ClInclude Include="DynamicArrayMove.h" />
+    <ClInclude Include="DynamicArray_base.h" />
+    <ClInclude Include="generate_item.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
