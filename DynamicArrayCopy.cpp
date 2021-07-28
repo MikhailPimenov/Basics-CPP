@@ -41,3 +41,4 @@ DynamicArrayCopy<T>& DynamicArrayCopy<T>::operator=(const DynamicArrayCopy<T>& o
 
 	return *this;
 }
+

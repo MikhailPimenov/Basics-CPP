@@ -38,7 +38,7 @@ int main() {
 
 
 	const int length = 1000000;
-	const int number_of_tests = 5;
+	const int number_of_tests = 50;
 	
 	double total_time1 = 0.0;
 	double total_time2 = 0.0;
