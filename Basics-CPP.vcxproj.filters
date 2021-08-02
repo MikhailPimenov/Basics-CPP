@@ -22,9 +22,4 @@
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
 </Project>
