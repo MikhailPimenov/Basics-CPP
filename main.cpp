@@ -1,195 +1,207 @@
 #include <iostream>
-#include <utility>
-#include <vector>
+#include <memory>
 
-class MoveClass {
-public:
-	int* m_resource;
+#include "Item.h"
 
-public:
-	MoveClass(int * resource = nullptr): 
-		m_resource(resource) {
-		//std::cout << "MoveClass(int*):\n";
-	}
-	MoveClass(int resource = 0): 
-		m_resource(new int{resource}) {
-		//std::cout << "MoveClass(int):\n";
-	}
-	MoveClass(const MoveClass &object): 
-		m_resource(new int{*(object.m_resource)}) {
-		//std::cout << "MoveClass(const MoveClass&):\n";
-	}
-	MoveClass(MoveClass&& object) noexcept: 
-		m_resource(object.m_resource) {
-		//std::cout << "MoveClass(MoveClass&&):\n";
-		object.m_resource = nullptr;
-	}
+void f1(){
+	std::cout << "begin f1():\n";
 
-	~MoveClass() {
-		std::cout << "Destroyed ";
-		print();
-		delete m_resource;
-	}
+	std::unique_ptr<Item> item(std::make_unique<Item>(15));
+	item->sayHI();
 
-	void print() const {
-		std::cout << "MoveClass(";
-		if (m_resource)
-			std::cout << *m_resource;
-		else
-			std::cout << "Empty";
+	std::cout << "end f1():\n";
+}
+
+void f2() {
+	std::cout << "begin f2():\n";
+	std::unique_ptr<Item[]> items(new Item[3]);
+
+	for (int index = 0; index < 3; ++index)
+		items[index].sayHI();
+
+	std::cout << "end f2():\n";
+}
+
+void f3() {
+	std::cout << "begin f3():\n";
+
+	std::unique_ptr<Item> item(std::make_unique<Item>(99));
+	std::unique_ptr<Item> item2;
+
+	if (item)
+		item->sayHI();
+	if (item2)
+		item2->sayHI();
+
+	std::cout << "item is " << (static_cast<bool>(item) ? "not null" : "null") << '\n';
+	std::cout << "item2 is " << (static_cast<bool>(item2) ? "not null" : "null") << '\n';
+
+	item2 = std::move(item);
+	std::cout << "ownership transfered\n";
+
+	if (item)
+		item->sayHI();
+	if (item2)
+		item2->sayHI();
+
+	std::cout << "item is " << (static_cast<bool>(item) ? "not null" : "null") << '\n';
+	std::cout << "item2 is " << (static_cast<bool>(item2) ? "not null" : "null") << '\n';
+
+	std::cout << "end f3():\n";
+}
+
+void take_by_value(std::unique_ptr<Item> item) {
+	item->sayHI();
+}
+void f4() {
+	std::cout << "begin f4():\n";
+
+	std::unique_ptr<Item> item(std::make_unique<Item>(77));
+	item->sayHI();
+
+	take_by_value(std::move(item)); // item gets destroyed after take_by_value() finishes being executed
+
+	std::cout << "end f4():\n";
+}
+
+void take_pointer_to_resource(Item* item) {
+	item->sayHI();
+}
+void f5() {
+	std::cout << "begin f5():\n";
+
+	std::unique_ptr<Item> item(std::make_unique<Item>(66));
+	item->sayHI();
+
+	take_pointer_to_resource(item.get()); 
+
+	std::cout << "end f5():\n";
+
+	// item gets destroyed here
+}
+
+std::unique_ptr<Item> get_item() {
+	std::unique_ptr<Item> item(std::make_unique<Item>(55));
+
+	item->sayHI();
+
+	return item;
+}
+void f6() {
+	std::cout << "begin f6():\n";
+
+	std::unique_ptr<Item> item(get_item());
+	item->sayHI();
+
+	std::cout << "end f6():\n";
+}
+
+void f7() {
+	std::cout << "begin f7():\n";
 	
-		std::cout << ")\n";
-	}
-};
-class CopyClass {
-public:
-	bool m_throw{};
+	Item* item = new Item(999);
+	std::unique_ptr<Item> p1(item);
+	std::unique_ptr<Item> p2(item);
+	
+	std::cout << "end f7():\n";
 
-public:
-	CopyClass(bool throww) : m_throw(throww) {
+	// item gets destroyed two times => undefined behaviour
+}
+
+void f8() {
+	std::cout << "begin f8():\n";
+
+	Item* item = new Item(111);
+	std::unique_ptr<Item> p(item);
+
+	delete item;
+	std::cout << "end f8():\n";
+
+	// item gets destroyed two times => undefined behaviour
+}
+
+int function_that_can_throw_an_exception() {
+	std::cout << "Throwing an exception...\n";
+	throw - 1;
+	return 0;
+}
+void function(std::unique_ptr<Item> item1, int value, std::unique_ptr<Item> item2) {
+	return;
+}
+void f9() {
+	std::cout << "begin f9():\n";
+
+	try {
+		// Compiler can select the order it wants:
+		// first allocate Item(11), then execute function_that_can_throw_an_exception,
+		// then create unique_ptr for Item(11). 
+		// In case of exception unique_ptr won't be created,
+		// so there will be nobody resbonsible for deallocation of Item(11)
+		// what will lead to memory leak
+
+		function(
+			std::unique_ptr<Item>(new Item(11)),
+			function_that_can_throw_an_exception(),
+			std::unique_ptr<Item>(new Item(33))
+		);
+	}
+	catch (int exception) {
+		std::cout << "Caught int-exception: " << exception << '\n';
+	}
+
+	std::cout << "end f9():\n";
+}
+void f10() {
+	std::cout << "begin f9():\n";
+
+	try {
+
+		// Here memory allocation and unique_ptr creation
+		// are not separated due to make_unique:
 		
+		function(
+			std::unique_ptr<Item>(std::make_unique<Item>(11)),
+			function_that_can_throw_an_exception(),
+			std::unique_ptr<Item>(std::make_unique<Item>(33))
+		);
 	}
-	CopyClass(const CopyClass& object) : m_throw(object.m_throw) {
-		if (m_throw)
-			throw - 1;
-	}
-};
-
-template <typename First, typename Second>
-class Pair_move {
-public:
-	First m_first;
-	Second m_second;
-
-public:
-	/*Pair_move(const First& first, const Second& second) : 
-		m_first(first), 
-		m_second(second) {
-		std::cout << "Pair_move(const First&, const Second&):\n";
-	}*/
-
-	Pair_move(First&& first, Second&& second) :
-		m_first(std::move(first)),
-		m_second(std::move(second)) {
-		std::cout << "Pair_move(First&&, Second&&):\n";
+	catch (int exception) {
+		std::cout << "Caught int-exception: " << exception << '\n';
 	}
 
-};
-
-template <typename First, typename Second>
-class Pair_move_if_noexcept {
-public:
-	First m_first;
-	Second m_second;
-
-public:
-	/*Pair_move_if_noexcept(const First& first, const Second& second) :
-		m_first(first),
-		m_second(second) {
-		std::cout << "Pair_move_if_noexcept(const First&, const Second&):\n";
-	}*/
-
-	Pair_move_if_noexcept(First&& first, Second&& second) :
-		// will convert to rvalue if there are no functions 
-		// during constructing new First object, 
-		// but it knows nothing about functions that may throw 
-		// during construction new Second object
-		m_first(std::move_if_noexcept(first)),
-
-		// will convert to rvalue if there are no functions 
-		// during constructing new Second object
-		// but it knows nothing about functions that may throw 
-		// during construction new First object
-		m_second(std::move_if_noexcept(second)) {
-		std::cout << "Pair_move_if_noexcept(First&&, Second&&):\n";
-	}
-
-};
-
-void move_example() {
-	Pair_move<MoveClass, CopyClass> pair{ MoveClass(14), CopyClass(false) };
-	pair.m_second.m_throw = true;
-
-	pair.m_first.print();
-	{
-		try {
-			Pair_move<MoveClass, CopyClass> pair2{ std::move(pair) };
-		}
-		catch (int exception) {
-			std::cout << "Caught an int-exception: " << exception << '\n';
-		}
-	}
-	pair.m_first.print();
-}
-
-void move_if_noexcept_wrong_example() {
-	Pair_move_if_noexcept<MoveClass, CopyClass> pair{ MoveClass(14), CopyClass(false) };
-	pair.m_second.m_throw = true;
-
-	pair.m_first.print();
-	{
-		try {
-			Pair_move_if_noexcept<MoveClass, CopyClass> pair2{ std::move(pair) }; // still std::move
-		}
-		catch (int exception) {
-			std::cout << "Caught an int-exception: " << exception << '\n';
-		}
-	}
-	pair.m_first.print();
-}
-
-void move_if_noexcept_example1() {
-	Pair_move<MoveClass, CopyClass> pair{ MoveClass(14), CopyClass(false) };
-	pair.m_second.m_throw = true;
-
-	pair.m_first.print();
-	{
-		try {
-			// In that case move_if_noexcept will check if all functions invoked 
-			// during constructing new Pair_move object don't throw any exception
-			// and if so will convert pair to rvalue
-			Pair_move<MoveClass, CopyClass> pair2{ std::move_if_noexcept(pair) }; // std::move_if_no_except instead of std::move
-		}
-		catch (int exception) {
-			std::cout << "Caught an int-exception: " << exception << '\n';
-		}
-	}
-	pair.m_first.print();
-}
-
-
-
-void move_if_noexcept_example2() {
-	Pair_move_if_noexcept<MoveClass, CopyClass> pair{ MoveClass(14), CopyClass(false) };
-	pair.m_second.m_throw = true;
-
-	pair.m_first.print();
-	{
-		try {
-			// In that case move_if_noexcept will check if all functions invoked 
-			// during constructing new Pair_move_if_noexcept object don't throw any exception
-			// and if so will convert pair to rvalue
-			Pair_move_if_noexcept<MoveClass, CopyClass> pair2{ std::move_if_noexcept(pair) }; // std::move_if_no_except instead of std::move
-		}
-		catch (int exception) {
-			std::cout << "Caught an int-exception: " << exception << '\n';
-		}
-	}
-	pair.m_first.print();
+	std::cout << "end f9():\n";
 }
 
 int main() {
-	std::cout << "\nData is lost while creating new object:\n";
-	move_example();
+	f1();
+	std::cout << '\n';
+	
+	f2();
+	std::cout << '\n';
 
-	std::cout << "\nData is lost while creating new object. Wrong usage of move_if_noexcept : \n";
-	move_if_noexcept_wrong_example();
+	f3();
+	std::cout << '\n';
 
-	std::cout << "\nInstead of dangerous moving safe copying occures, data is not lost:\n";
-	move_if_noexcept_example1();
+    f4();
+	std::cout << '\n';
 
-	std::cout << "\nInstead of dangerous moving safe copying occures, data is not lost. A little bit safer:\n";
-	move_if_noexcept_example2();
+    f5();
+	std::cout << '\n';
+
+	f6();
+	std::cout << '\n';
+
+	//f7(); // undefined behaviour, same memory is deleted two times
+	std::cout << '\n';
+
+	//f8(); // undefined behaviour, same memory is deleted two times
+	std::cout << '\n';
+
+	f9();
+	std::cout << '\n';
+
+	f10();
+	std::cout << '\n';
 
 	return 0;
 }
