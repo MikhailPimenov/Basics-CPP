@@ -1,7 +1,7 @@
 #include "Item.h"
 
 Item::Item(int data) : m_data(data) {
-	std::cout << "Item acquired!\n";
+	std::cout << "Item(" << m_data << ") acquired!\n";
 }
 
 Item::~Item() {

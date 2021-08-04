@@ -3,205 +3,144 @@
 
 #include "Item.h"
 
-void f1(){
+void f1() {
 	std::cout << "begin f1():\n";
 
-	std::unique_ptr<Item> item(std::make_unique<Item>(15));
+	Item* item = new Item(11);
 	item->sayHI();
 
-	std::cout << "end f1():\n";
-}
+	std::shared_ptr<Item> ptr(item);
+	ptr->sayHI();
 
+	std::cout << "end f1():\n\n";
+}
 void f2() {
 	std::cout << "begin f2():\n";
-	std::unique_ptr<Item[]> items(new Item[3]);
 
-	for (int index = 0; index < 3; ++index)
-		items[index].sayHI();
+	Item* item = new Item(22);
+	std::shared_ptr<Item> ptr1(item);
+	{
+		std::shared_ptr<Item> ptr2(ptr1);
+		ptr2->sayHI();
+		std::cout << "Killing one of shared pointers...\n";
+	}
 
-	std::cout << "end f2():\n";
+	ptr1->sayHI();
+
+	std::cout << "end f2():\n\n";
 }
-
 void f3() {
 	std::cout << "begin f3():\n";
 
-	std::unique_ptr<Item> item(std::make_unique<Item>(99));
-	std::unique_ptr<Item> item2;
+	Item* item = new Item(33);
+	std::shared_ptr<Item> ptr1(item);
 
-	if (item)
-		item->sayHI();
-	if (item2)
-		item2->sayHI();
+	
+	{
+		std::shared_ptr<Item> ptr2(item); // wrong, ptr2 need to be created by copying ptr1
+		ptr2->sayHI();
+		std::wcout << "Killing one of shared pointers...\n";
 
-	std::cout << "item is " << (static_cast<bool>(item) ? "not null" : "null") << '\n';
-	std::cout << "item2 is " << (static_cast<bool>(item2) ? "not null" : "null") << '\n';
+		// item is destroyed here, because ptr2 thinks he is the only pointer to item
+	}
 
-	item2 = std::move(item);
-	std::cout << "ownership transfered\n";
+	ptr1->sayHI();
+	
+	std::cout << "end f3():\n\n";
 
-	if (item)
-		item->sayHI();
-	if (item2)
-		item2->sayHI();
-
-	std::cout << "item is " << (static_cast<bool>(item) ? "not null" : "null") << '\n';
-	std::cout << "item2 is " << (static_cast<bool>(item2) ? "not null" : "null") << '\n';
-
-	std::cout << "end f3():\n";
+	// undefined behaviour here: ptr1 tries to delete already deleted item
 }
 
-void take_by_value(std::unique_ptr<Item> item) {
-	item->sayHI();
+int function_that_can_throw_an_exception() {
+	throw - 1;
+	return 0;
+}
+void function(std::shared_ptr<Item>, int, std::shared_ptr<Item>){
+	return;
 }
 void f4() {
 	std::cout << "begin f4():\n";
 
-	std::unique_ptr<Item> item(std::make_unique<Item>(77));
-	item->sayHI();
 
-	take_by_value(std::move(item)); // item gets destroyed after take_by_value() finishes being executed
+	// not recommended, unsafe in case of exceptions,
+	// because compiler can choose order it wants,
+	// such is allocating memory for object, 
+	// then executing function_that_can_throw_an_exception,
+	// and then creating shared_ptr responsible for object allocated before.
+	// If exception is thrown, memory for object is allocated,
+	// but shared_ptr responsible for that object is still not created,
+	// so there will be nobody to delete allocated object:
 
-	std::cout << "end f4():\n";
+	try {
+		function(
+			std::shared_ptr<Item>(new Item(441)),
+			function_that_can_throw_an_exception(),
+			std::shared_ptr<Item>(new Item(443))
+		);
+	}
+	catch (int exception) {
+		std::cout << "Caught int-exception: " << exception << '\n';
+		std::cout << "Check if all objects are destroyed\n";
+	}
+
+	std::cout << "end f4():\n\n";
 }
 
-void take_pointer_to_resource(Item* item) {
-	item->sayHI();
-}
 void f5() {
 	std::cout << "begin f5():\n";
 
-	std::unique_ptr<Item> item(std::make_unique<Item>(66));
-	item->sayHI();
+	// make_shared should be always used
+	try {
+		function(
+			std::shared_ptr<Item>(std::make_shared<Item>(551)),
+			function_that_can_throw_an_exception(),
+			std::shared_ptr<Item>(std::make_shared<Item>(553))
+		);
+	}
+	catch (int exception) {
+		std::cout << "Caught int-exception: " << exception << '\n';
+		std::cout << "Check if all objects are destroyed\n";
+	}
 
-	take_pointer_to_resource(item.get()); 
-
-	std::cout << "end f5():\n";
-
-	// item gets destroyed here
+	std::cout << "end f5():\n\n";
 }
 
-std::unique_ptr<Item> get_item() {
-	std::unique_ptr<Item> item(std::make_unique<Item>(55));
-
-	item->sayHI();
-
-	return item;
+// do not use this because shared_ptr can not be safely converted to unique_ptr
+std::shared_ptr<Item> get_shared_ptr() {
+	return std::make_shared<Item>(999);
 }
+
+// use this because unique_ptr can be converted to shared_ptr
+std::unique_ptr<Item> get_unique_ptr() {
+	return std::make_unique<Item>(999);
+}
+
 void f6() {
 	std::cout << "begin f6():\n";
 
-	std::unique_ptr<Item> item(get_item());
-	item->sayHI();
+	// wrong - there is no way to safely convert shared_ptr to unique_ptr
+	//std::unique_ptr<Item> ptr1(std::make_shared<Item>(661));
+	//std::unique_ptr<Item> ptr11(get_shared_ptr());
 
-	std::cout << "end f6():\n";
-}
 
-void f7() {
-	std::cout << "begin f7():\n";
-	
-	Item* item = new Item(999);
-	std::unique_ptr<Item> p1(item);
-	std::unique_ptr<Item> p2(item);
-	
-	std::cout << "end f7():\n";
+	std::shared_ptr<Item> ptr2(std::make_unique<Item>(662));
+	std::shared_ptr<Item> ptr22(get_unique_ptr());
 
-	// item gets destroyed two times => undefined behaviour
-}
 
-void f8() {
-	std::cout << "begin f8():\n";
+	ptr2->sayHI();
+	ptr22->sayHI();
 
-	Item* item = new Item(111);
-	std::unique_ptr<Item> p(item);
-
-	delete item;
-	std::cout << "end f8():\n";
-
-	// item gets destroyed two times => undefined behaviour
-}
-
-int function_that_can_throw_an_exception() {
-	std::cout << "Throwing an exception...\n";
-	throw - 1;
-	return 0;
-}
-void function(std::unique_ptr<Item> item1, int value, std::unique_ptr<Item> item2) {
-	return;
-}
-void f9() {
-	std::cout << "begin f9():\n";
-
-	try {
-		// Compiler can select the order it wants:
-		// first allocate Item(11), then execute function_that_can_throw_an_exception,
-		// then create unique_ptr for Item(11). 
-		// In case of exception unique_ptr won't be created,
-		// so there will be nobody resbonsible for deallocation of Item(11)
-		// what will lead to memory leak
-
-		function(
-			std::unique_ptr<Item>(new Item(11)),
-			function_that_can_throw_an_exception(),
-			std::unique_ptr<Item>(new Item(33))
-		);
-	}
-	catch (int exception) {
-		std::cout << "Caught int-exception: " << exception << '\n';
-	}
-
-	std::cout << "end f9():\n";
-}
-void f10() {
-	std::cout << "begin f9():\n";
-
-	try {
-
-		// Here memory allocation and unique_ptr creation
-		// are not separated due to make_unique:
-		
-		function(
-			std::unique_ptr<Item>(std::make_unique<Item>(11)),
-			function_that_can_throw_an_exception(),
-			std::unique_ptr<Item>(std::make_unique<Item>(33))
-		);
-	}
-	catch (int exception) {
-		std::cout << "Caught int-exception: " << exception << '\n';
-	}
-
-	std::cout << "end f9():\n";
+	std::cout << "end f6():\n\n";
 }
 
 int main() {
 	f1();
-	std::cout << '\n';
-	
 	f2();
-	std::cout << '\n';
-
-	f3();
-	std::cout << '\n';
-
-    f4();
-	std::cout << '\n';
-
-    f5();
-	std::cout << '\n';
-
+	//f3(); // undefined behaviour
+	f4(); // memory leak
+	f5();
 	f6();
-	std::cout << '\n';
 
-	//f7(); // undefined behaviour, same memory is deleted two times
-	std::cout << '\n';
-
-	//f8(); // undefined behaviour, same memory is deleted two times
-	std::cout << '\n';
-
-	f9();
-	std::cout << '\n';
-
-	f10();
-	std::cout << '\n';
 
 	return 0;
 }
