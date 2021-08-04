@@ -139,14 +139,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="become_partner-impl.cpp" />
+    <ClCompile Include="become_partner.cpp" />
+    <ClCompile Include="Human_base.cpp" />
+    <ClCompile Include="Human_shared.cpp" />
+    <ClCompile Include="Human_weak.cpp" />
+    <ClCompile Include="Item_shared.cpp" />
+    <ClCompile Include="Item_weak.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Item.h" />
+    <ClInclude Include="become_partner.h" />
+    <ClInclude Include="Human_base.h" />
+    <ClInclude Include="Human_shared.h" />
+    <ClInclude Include="Human_weak.h" />
+    <ClInclude Include="Item_shared.h" />
+    <ClInclude Include="Item_weak.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
